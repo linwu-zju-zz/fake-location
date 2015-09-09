@@ -59,7 +59,7 @@
         android:layout_below="@+id/Title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="13dp"
-        android:text="@string/initial_indicator_text_view"/>
+        android:text="@string/initial_indicator_textView_text"/>
 
 
 </RelativeLayout>

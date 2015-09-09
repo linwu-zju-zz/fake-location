@@ -24,6 +24,7 @@ import java.util.TimerTask;
 
 public class MainActivity extends Activity {
 
+    public static final String TAG = "Fake!";
     Context context;
     boolean isEnabled = false;
     final int delay = 100 * 5; //0.5 seconds
@@ -42,7 +43,7 @@ public class MainActivity extends Activity {
 
         public void onLocationChanged(Location location) {
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            Log.i("mock","location changed" + location.toString());
+            Log.v(TAG,"location changed" + location.toString());
         }
         public void onStatusChanged(String provider, int status, Bundle extras) {}
         public void onProviderEnabled(String provider) {}
@@ -156,7 +157,7 @@ public class MainActivity extends Activity {
         location.setBearing(0F);
         locationManager.setTestProviderLocation(LocationManager.GPS_PROVIDER, location);
 
-        Log.v("Fake !","fake location enabled");
+        Log.v(TAG,"fake location enabled");
 
     }
 
