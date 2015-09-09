@@ -21,22 +21,22 @@ import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- *
- * @author FrankkieNL
- */
+
 public class MainActivity extends Activity {
 
     Context context;
-    String mockProviderName = "gps";
-    boolean isMockEnabled = false;
-    int delay = 100 * 2; //0.2 seconds
-    Button btn1;
-    Button btn2;
-    TextView tv1;
-    EditText ed1;
-    Timer timer1;
+    boolean isEnabled = false;
+    int delay = 100 * 5; //0.5 seconds
+    Button startButton;
+    Button stopButton;
+    TextView titleTextView;
+    TextView indicatorTextView;
+    EditText latitudeEditText;
+    EditText longitudeEditText;
+    Timer mTimer;
     LocationManager locationManager;
+    double mLatitude;
+    double mLongitude;
 
     LocationListener listener = new LocationListener() {
 
@@ -56,26 +56,22 @@ public class MainActivity extends Activity {
         context = this;
         initUI();
     }
-
-    /**
-     * UI boilerplate
-     */
+    
     public void initUI() {
         setContentView(R.layout.activity_main);
-        tv1 = (TextView) findViewById(R.id.tv1);
-        tv1.setText("Mock Locations\nEnabled: " + isMockEnabled);
-        ed1 = (EditText) findViewById(R.id.ed1);
-        //ed1.setVisibility(View.GONE); //not needed, just use the name 'mock'
-        ed1.setText(mockProviderName);
-        btn1 = (Button) findViewById(R.id.btn1);
-        btn1.setOnClickListener(new View.OnClickListener() {
+        indicatorTextView = (TextView) findViewById(R.id.indicatorTextView);
+        indicatorTextView.setText(getString(R.string.indicator_message) + isEnabled);
+        latitudeEditText = (EditText) findViewById(R.id.latitudeEditText);
+        longitudeEditText = (EditText) findViewById(R.id.longitudeEditText);
+        startButton = (Button) findViewById(R.id.startButton);
+        startButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 startMockLocations();
             }
         });
-        btn2 = (Button) findViewById(R.id.btn2);
-        btn2.setOnClickListener(new View.OnClickListener() {
+        stopButton = (Button) findViewById(R.id.stopButton);
+        stopButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 stopMockLocations();
@@ -85,77 +81,90 @@ public class MainActivity extends Activity {
     }
 
     public void startMockLocations() {
-        isMockEnabled = true;
-        mockProviderName = ed1.getText().toString();
+        isEnabled = true;
+        mLatitude = Double.parseDouble(latitudeEditText.getText().toString());
+        mLongitude = Double.parseDouble(longitudeEditText.getText().toString());
+
+        if(!checkCoordinate(mLatitude, mLongitude)) {
+            Toast.makeText(context, getString(R.string.error_input), Toast.LENGTH_LONG).show();
+            return;
+        }
         locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         try {
             locationManager.addTestProvider(LocationManager.GPS_PROVIDER, true, false, false, false, true, false, true, Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
             locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
-            tv1.setText("Mock Locations\nEnabled: " + isMockEnabled);
-            if (timer1 != null) {
-                timer1.cancel();
-                timer1 = null;
+            indicatorTextView.setText(getString(R.string.indicator_message) + isEnabled);
+            if (mTimer != null) {
+                mTimer.cancel();
+                mTimer = null;
             }
-            timer1 = new Timer();
-            timer1.schedule(new TimerTask() {
+            mTimer = new Timer();
+            mTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    setMockLocation();
+                    setMockLocation(mLatitude, mLongitude);
                 }
-            }, 500, 2000);
+            }, delay, 2000);
         } catch (SecurityException e) {
             e.printStackTrace();
             //Security Exception
             //User has not enabled Mock-Locations
-            isMockEnabled = false;
+            isEnabled = false;
             enableMockLocationsInSettings();
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             //probaly the 'unknown provider issue'
             Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-            isMockEnabled = false;
+            isEnabled = false;
         }
 
     }
 
+    public boolean checkCoordinate(double latitude, double longitude) {
+        return (latitude >= -90 && latitude <= 90) && (longitude >= -180 && longitude <= 180);
+    }
+
     public void enableMockLocationsInSettings() {
-        Toast.makeText(context, "Please Enable Mock Locations in Settings", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, getString(R.string.warning_mock_setting_message), Toast.LENGTH_LONG).show();
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS);
         try {
             startActivity(intent);
         } catch (Exception e) {
-            //Apparantly something went wrong here.. Cannot send user to right place in Settings.
+            //Cannot send user to right place in Settings.
         }
     }
 
-    public void setMockLocation() {
+    public void setMockLocation(double latitude, double longitude) {
         Location location = new Location(LocationManager.GPS_PROVIDER);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             location.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
         }
-        location.setLatitude(39.9167);
-        location.setLongitude(116.3833);
+        location.setLatitude(latitude);
+        location.setLongitude(longitude);
         location.setAccuracy(16F);
         location.setAltitude(0D);
         location.setTime(System.currentTimeMillis());
         location.setBearing(0F);
         locationManager.setTestProviderLocation(LocationManager.GPS_PROVIDER, location);
 
-        Log.v("Mock !","mocked");
+        Log.v("Fake !","fake location enabled");
 
     }
 
     public void stopMockLocations() {
-        isMockEnabled = false;
+        isEnabled = false;
         LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+        if (locationManager.getProvider(LocationManager.GPS_PROVIDER) == null) {
+            return;
+        }
         locationManager.removeUpdates(listener);
         locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, false);
-        tv1.setText("Mock Locations\nEnabled: " + isMockEnabled);
-        if (timer1 != null) {
-            timer1.cancel();
-            timer1 = null;
+        indicatorTextView.setText(getString(R.string.indicator_message) + isEnabled);
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
         }
         locationManager.removeTestProvider(LocationManager.GPS_PROVIDER);
     }

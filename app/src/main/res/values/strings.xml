@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Fake Location</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="indicator_message">Fake Location Enabled: </string>
+    <string name="error_input">Invalid Coordinate</string>
+    <string name="warning_mock_setting_message">Please Enable Mock Locations in Settings</string>
 </resources>

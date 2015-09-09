@@ -1,33 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
     >
     <TextView
-        android:id="@+id/tv1"
-        android:layout_width="fill_parent"
+        android:id="@+id/Title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mock Locations"
-        />
+        android:text="Fake Location"
+        android:textSize="24sp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:textColor="@android:color/primary_text_light"/>
     <EditText
-        android:hint="Location Provider name (e.g. gps)"
-        android:id="@+id/ed1"
-        android:layout_width="fill_parent"
+        android:hint="Please enter latitude (-90 ~ 90)"
+        android:id="@+id/latitudeEditText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        android:layout_below="@+id/Title"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="115dp"
+        android:imeOptions="actionDone"
+        android:singleLine="true"/>
+    <EditText
+        android:hint="Please enter longitude (-180 ~ 180)"
+        android:id="@+id/longitudeEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="31dp"
+        android:layout_below="@+id/latitudeEditText"
+        android:layout_alignParentLeft="true"
+        android:imeOptions="actionDone"
+        android:singleLine="true"/>
     <Button
-        android:id="@+id/btn1"
-        android:layout_width="fill_parent"
+        android:id="@+id/startButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Start"
-        />
+        android:layout_above="@+id/stopButton"
+        android:layout_alignParentLeft="true"/>
 
     <Button
-        android:id="@+id/btn2"
-        android:layout_width="fill_parent"
+        android:id="@+id/stopButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Stop"
-        />
-</LinearLayout>
+        android:layout_marginBottom="98dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="isEnabled = false"
+        android:id="@+id/indicatorTextView"
+        android:layout_below="@+id/Title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="13dp"/>
+
+
+</RelativeLayout>
 
