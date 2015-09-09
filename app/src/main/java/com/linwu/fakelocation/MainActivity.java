@@ -3,10 +3,13 @@ package com.linwu.fakelocation;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +18,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -34,26 +36,17 @@ public class MainActivity extends Activity {
     TextView tv1;
     EditText ed1;
     Timer timer1;
-    TimerTask task1;
+    LocationManager locationManager;
 
     LocationListener listener = new LocationListener() {
 
         public void onLocationChanged(Location location) {
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            Log.e("mock", "location changed" + location.toString());
+            Log.e("mock","location changed" + location.toString());
         }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        public void onProviderEnabled(String provider) {
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        public void onProviderDisabled(String provider) {
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+        public void onProviderEnabled(String provider) {}
+        public void onProviderDisabled(String provider) {}
 
     };
 
@@ -94,25 +87,23 @@ public class MainActivity extends Activity {
     public void startMockLocations() {
         isMockEnabled = true;
         mockProviderName = ed1.getText().toString();
-        LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+        locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         try {
-            //locationManager.addTestProvider(mockProviderName, false /*network*/, false/*satellite*/, false/*call*/, false/*moneycost*/, true/*altitude*/, true/*speed*/, true/*bearing*/, Criteria.POWER_LOW/*power*/, Criteria.ACCURACY_FINE /*accuracy*/);
-            locationManager.addTestProvider(mockProviderName, false /*network*/, false/*satellite*/, false/*call*/, false/*moneycost*/, false,false,false,1,1);
-            locationManager.setTestProviderEnabled(mockProviderName, true);
-            locationManager.requestLocationUpdates(mockProviderName, 0, 0, listener);
+            locationManager.addTestProvider(LocationManager.GPS_PROVIDER, true, false, false, false, true, false, true, Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
+            locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
             tv1.setText("Mock Locations\nEnabled: " + isMockEnabled);
             if (timer1 != null) {
                 timer1.cancel();
                 timer1 = null;
             }
             timer1 = new Timer();
-            task1 = new TimerTask() {
+            timer1.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    changeMockLocation();
+                    setMockLocation();
                 }
-            };
-            timer1.schedule(task1, delay, delay); //repeating
+            }, 500, 2000);
         } catch (SecurityException e) {
             e.printStackTrace();
             //Security Exception
@@ -139,23 +130,18 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void changeMockLocation() {
-        //Is it needed to call this from the UI-thread?
-        LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-        Location mockLocation = new Location(mockProviderName);
-        Random random = new Random();
-        mockLocation.setAccuracy(random.nextFloat() * 50);
-        mockLocation.setAltitude(random.nextDouble() * 100);
-        mockLocation.setBearing(random.nextFloat() * 360);
-        mockLocation.setElapsedRealtimeNanos(System.nanoTime());
-        /*mockLocation.setLatitude(-90 + random.nextDouble() * (90 * 2)); //-90 till 90
-        mockLocation.setLongitude(-180 + random.nextDouble() * (180 * 2)); //-180 till 180*/
-
-        mockLocation.setLatitude(39.9167); //-90 till 90    //39.9167
-        mockLocation.setLongitude(116.3833); //-180 till 180    //116.3833
-        mockLocation.setSpeed(random.nextFloat() * 10); //speed in m/s
-        mockLocation.setTime(System.currentTimeMillis());
-        locationManager.setTestProviderLocation(mockProviderName, mockLocation);
+    public void setMockLocation() {
+        Location location = new Location(LocationManager.GPS_PROVIDER);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            location.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+        }
+        location.setLatitude(39.9167);
+        location.setLongitude(116.3833);
+        location.setAccuracy(16F);
+        location.setAltitude(0D);
+        location.setTime(System.currentTimeMillis());
+        location.setBearing(0F);
+        locationManager.setTestProviderLocation(LocationManager.GPS_PROVIDER, location);
 
         Log.v("Mock !","mocked");
 
@@ -165,13 +151,13 @@ public class MainActivity extends Activity {
         isMockEnabled = false;
         LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         locationManager.removeUpdates(listener);
-        locationManager.setTestProviderEnabled(mockProviderName, false);
+        locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, false);
         tv1.setText("Mock Locations\nEnabled: " + isMockEnabled);
         if (timer1 != null) {
             timer1.cancel();
             timer1 = null;
         }
-        locationManager.removeTestProvider(mockProviderName);
+        locationManager.removeTestProvider(LocationManager.GPS_PROVIDER);
     }
 
 }
