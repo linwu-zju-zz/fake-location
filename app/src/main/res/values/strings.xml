@@ -5,4 +5,10 @@
     <string name="indicator_message">Fake Location Enabled: </string>
     <string name="error_input">Invalid Coordinate</string>
     <string name="warning_mock_setting_message">Please Enable Mock Locations in Settings</string>
+    <string name="latitude_hint">Please enter latitude (-90 ~ 90)</string>
+    <string name="initial_indicator_text_view">Fake Location Enabled: false</string>
+    <string name="longitude_lint">Please enter longitude (-180 ~ 180)</string>
+    <string name="title">Fake Location</string>
+    <string name="start_button_text">Start</string>
+    <string name="stop_button_text">Stop</string>
 </resources>

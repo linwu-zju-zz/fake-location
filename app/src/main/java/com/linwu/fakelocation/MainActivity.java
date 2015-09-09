@@ -26,10 +26,10 @@ public class MainActivity extends Activity {
 
     Context context;
     boolean isEnabled = false;
-    int delay = 100 * 5; //0.5 seconds
+    final int delay = 100 * 5; //0.5 seconds
+    final int lastTime = 1000 * 2; //2 seconds
     Button startButton;
     Button stopButton;
-    TextView titleTextView;
     TextView indicatorTextView;
     EditText latitudeEditText;
     EditText longitudeEditText;
@@ -42,7 +42,7 @@ public class MainActivity extends Activity {
 
         public void onLocationChanged(Location location) {
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            Log.e("mock","location changed" + location.toString());
+            Log.i("mock","location changed" + location.toString());
         }
         public void onStatusChanged(String provider, int status, Bundle extras) {}
         public void onProviderEnabled(String provider) {}
@@ -67,7 +67,7 @@ public class MainActivity extends Activity {
         startButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                startMockLocations();
+                startFakeLocations();
             }
         });
         stopButton = (Button) findViewById(R.id.stopButton);
@@ -80,15 +80,22 @@ public class MainActivity extends Activity {
 
     }
 
-    public void startMockLocations() {
+    public void startFakeLocations() {
         isEnabled = true;
-        mLatitude = Double.parseDouble(latitudeEditText.getText().toString());
-        mLongitude = Double.parseDouble(longitudeEditText.getText().toString());
+
+        try {
+            mLatitude = Double.parseDouble(latitudeEditText.getText().toString());
+            mLongitude = Double.parseDouble(longitudeEditText.getText().toString());
+        } catch(NumberFormatException e) {
+            Toast.makeText(context, getString(R.string.error_input), Toast.LENGTH_LONG).show();
+            return;
+        }
 
         if(!checkCoordinate(mLatitude, mLongitude)) {
             Toast.makeText(context, getString(R.string.error_input), Toast.LENGTH_LONG).show();
             return;
         }
+
         locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         try {
             locationManager.addTestProvider(LocationManager.GPS_PROVIDER, true, false, false, false, true, false, true, Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
@@ -103,9 +110,9 @@ public class MainActivity extends Activity {
             mTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    setMockLocation(mLatitude, mLongitude);
+                    setFakeLocation(mLatitude, mLongitude);
                 }
-            }, delay, 2000);
+            }, delay, lastTime);
         } catch (SecurityException e) {
             e.printStackTrace();
             //Security Exception
@@ -136,7 +143,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void setMockLocation(double latitude, double longitude) {
+    public void setFakeLocation(double latitude, double longitude) {
         Location location = new Location(LocationManager.GPS_PROVIDER);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             location.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
@@ -155,18 +162,24 @@ public class MainActivity extends Activity {
 
     public void stopMockLocations() {
         isEnabled = false;
-        LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-        if (locationManager.getProvider(LocationManager.GPS_PROVIDER) == null) {
-            return;
+        try {
+            LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+            if (locationManager.getProvider(LocationManager.GPS_PROVIDER) == null) {
+                return;
+            }
+            locationManager.removeUpdates(listener);
+            locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, false);
+            indicatorTextView.setText(getString(R.string.indicator_message) + isEnabled);
+            if (mTimer != null) {
+                mTimer.cancel();
+                mTimer = null;
+            }
+            locationManager.removeTestProvider(LocationManager.GPS_PROVIDER);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
         }
-        locationManager.removeUpdates(listener);
-        locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, false);
-        indicatorTextView.setText(getString(R.string.indicator_message) + isEnabled);
-        if (mTimer != null) {
-            mTimer.cancel();
-            mTimer = null;
-        }
-        locationManager.removeTestProvider(LocationManager.GPS_PROVIDER);
+
     }
 
 }
