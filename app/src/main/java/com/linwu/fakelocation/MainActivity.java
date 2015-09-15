@@ -106,9 +106,9 @@ public class MainActivity extends Activity {
             locationManager.removeUpdates(listener);
             locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, false);
             indicatorTextView.setText(getString(R.string.indicator_message) + isEnabled);
-            if (mTimer != null) {
-                mTimer.cancel();
-                mTimer = null;
+            if (SetActivity.mTimer != null) {
+                SetActivity.mTimer.cancel();
+                SetActivity.mTimer = null;
             }
             locationManager.removeTestProvider(LocationManager.GPS_PROVIDER);
         } catch (IllegalArgumentException e) {

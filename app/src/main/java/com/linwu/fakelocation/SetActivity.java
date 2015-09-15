@@ -19,7 +19,7 @@ import java.util.TimerTask;
 public class SetActivity extends Activity {
 
     LocationManager locationManager;
-    Timer mTimer;
+    static Timer mTimer;
     final double defaultValue = -200;
     final int delay = 100 * 5; //0.5 seconds
     final int lastTime = 1000 * 2; //2 seconds
