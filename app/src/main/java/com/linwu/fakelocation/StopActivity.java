@@ -3,9 +3,12 @@ package com.linwu.fakelocation;
 import android.app.Activity;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 public class StopActivity extends Activity {
+
+    public static final String TAG = "Fake!";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +26,7 @@ public class StopActivity extends Activity {
             locationManager.removeUpdates(MainActivity.listener);
             locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, false);
             MainActivity.indicatorTextView.setText(getString(R.string.indicator_message) + MainActivity.isEnabled);
+            Log.v(TAG, "fake location disabled");
             if (SetActivity.mTimer != null) {
                 SetActivity.mTimer.cancel();
                 SetActivity.mTimer = null;
