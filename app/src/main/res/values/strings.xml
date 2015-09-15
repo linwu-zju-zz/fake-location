@@ -12,4 +12,7 @@
     <string name="start_button_text">Start</string>
     <string name="stop_button_text">Stop</string>
     <string name="fake_success_message">Fake Location Enabled!</string>
+    <string name="title_activity_set">SetActivity</string>
+    <string name="latitude">lat</string>
+    <string name="longitude">long</string>
 </resources>
