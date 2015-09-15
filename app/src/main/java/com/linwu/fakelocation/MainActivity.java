@@ -22,8 +22,8 @@ public class MainActivity extends Activity {
     static TextView indicatorTextView;
     EditText latitudeEditText;
     EditText longitudeEditText;
-    double mLatitude;
-    double mLongitude;
+    float mLatitude;
+    float mLongitude;
 
     static LocationListener listener = new LocationListener() {
 
@@ -69,8 +69,8 @@ public class MainActivity extends Activity {
     public void startFakeLocations() {
         isEnabled = true;
         try {
-            mLatitude = Double.parseDouble(latitudeEditText.getText().toString());
-            mLongitude = Double.parseDouble(longitudeEditText.getText().toString());
+            mLatitude = Float.parseFloat(latitudeEditText.getText().toString());
+            mLongitude = Float.parseFloat(longitudeEditText.getText().toString());
         } catch(NumberFormatException e) {
             Toast.makeText(this, getString(R.string.error_input), Toast.LENGTH_LONG).show();
             return;

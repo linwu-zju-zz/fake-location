@@ -1,14 +1,12 @@
 package com.linwu.fakelocation;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,7 +17,6 @@ public class SetActivity extends Activity {
 
     LocationManager locationManager;
     static Timer mTimer;
-    final double defaultValue = -200;
     final int delay = 100 * 5; //0.5 seconds
     final int lastTime = 1000 * 2; //2 seconds
     double mLatitude;
@@ -30,10 +27,6 @@ public class SetActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Intent intent = getIntent();
-        mLatitude = intent.getDoubleExtra(getString(R.string.latitude), defaultValue);
-        mLongitude = intent.getDoubleExtra(getString(R.string.longitude), defaultValue);
 
         Bundle extras = this.getIntent().getExtras();
         if(extras != null) {
@@ -64,26 +57,14 @@ public class SetActivity extends Activity {
             }, delay, lastTime);
         } catch (SecurityException e) {
             e.printStackTrace();
-            //Security Exception
-            //User has not enabled Mock-Locations
+            //Security Exception - User has not enabled Mock-Locations
             MainActivity.isEnabled = false;
-            enableMockLocationsInSettings();
+            Toast.makeText(this, getString(R.string.warning_mock_setting_message), Toast.LENGTH_LONG).show();
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             //probably the 'unknown provider issue'
             Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
             MainActivity.isEnabled = false;
-        }
-    }
-
-    public void enableMockLocationsInSettings() {
-        Toast.makeText(this, getString(R.string.warning_mock_setting_message), Toast.LENGTH_LONG).show();
-        Intent intent = new Intent();
-        intent.setAction(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS);
-        try {
-            startActivity(intent);
-        } catch (Exception e) {
-            //Cannot send user to right place in Settings.
         }
     }
 
