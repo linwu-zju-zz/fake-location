@@ -16,6 +16,6 @@
     <string name="latitude">lat</string>
     <string name="longitude">long</string>
     <string name="title_activity_stop">StopActivity</string>
+    <string name="stop_fake_location_exception">Fake location already stopped</string>
 
-    <string name="hello_world">Hello world!</string>
 </resources>

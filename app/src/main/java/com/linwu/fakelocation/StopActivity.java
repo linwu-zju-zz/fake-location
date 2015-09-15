@@ -22,7 +22,7 @@ public class StopActivity extends Activity {
             }
             locationManager.removeUpdates(MainActivity.listener);
             locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, false);
-            //indicatorTextView.setText(getString(R.string.indicator_message) + isEnabled);
+            MainActivity.indicatorTextView.setText(getString(R.string.indicator_message) + MainActivity.isEnabled);
             if (SetActivity.mTimer != null) {
                 SetActivity.mTimer.cancel();
                 SetActivity.mTimer = null;
@@ -30,7 +30,7 @@ public class StopActivity extends Activity {
             locationManager.removeTestProvider(LocationManager.GPS_PROVIDER);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.stop_fake_location_exception), Toast.LENGTH_LONG).show();
         }
     }
 }

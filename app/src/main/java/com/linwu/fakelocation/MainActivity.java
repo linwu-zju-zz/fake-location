@@ -16,10 +16,10 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
     public static final String TAG = "Fake!";
-    boolean isEnabled = false;
+    static boolean isEnabled = false;
     Button startButton;
     Button stopButton;
-    TextView indicatorTextView;
+    static TextView indicatorTextView;
     EditText latitudeEditText;
     EditText longitudeEditText;
     double mLatitude;

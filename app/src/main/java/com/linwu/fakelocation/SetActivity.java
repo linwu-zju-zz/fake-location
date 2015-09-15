@@ -50,7 +50,7 @@ public class SetActivity extends Activity {
             locationManager.addTestProvider(LocationManager.GPS_PROVIDER, true, false, false, false, true, false, true, Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
             locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, MainActivity.listener);
-            //indicatorTextView.setText(getString(R.string.indicator_message) + isEnabled);
+            MainActivity.indicatorTextView.setText(getString(R.string.indicator_message) + MainActivity.isEnabled);
             if (mTimer != null) {
                 mTimer.cancel();
                 mTimer = null;
@@ -66,13 +66,13 @@ public class SetActivity extends Activity {
             e.printStackTrace();
             //Security Exception
             //User has not enabled Mock-Locations
-            //isEnabled = false;
+            MainActivity.isEnabled = false;
             enableMockLocationsInSettings();
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             //probably the 'unknown provider issue'
             Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
-            //isEnabled = false;
+            MainActivity.isEnabled = false;
         }
     }
 

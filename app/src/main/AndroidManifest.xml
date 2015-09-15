@@ -25,11 +25,7 @@
             android:name=".SetActivity"
             android:exported="true"
             android:label="@string/title_activity_set"
-            android:parentActivityName=".MainActivity"
             android:theme="@android:style/Theme.NoDisplay" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.linwu.fakelocation.MainActivity" />
         </activity>
         <activity
             android:name=".StopActivity"
