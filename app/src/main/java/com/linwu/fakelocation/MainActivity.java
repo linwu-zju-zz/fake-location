@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -67,7 +66,7 @@ public class MainActivity extends Activity {
         stopButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                stopMockLocations();
+                stopFakeLocations();
             }
         });
 
@@ -96,24 +95,9 @@ public class MainActivity extends Activity {
         return (latitude >= -90 && latitude <= 90) && (longitude >= -180 && longitude <= 180);
     }
 
-    public void stopMockLocations() {
+    public void stopFakeLocations() {
         isEnabled = false;
-        try {
-            LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-            if (locationManager.getProvider(LocationManager.GPS_PROVIDER) == null) {
-                return;
-            }
-            locationManager.removeUpdates(listener);
-            locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, false);
-            indicatorTextView.setText(getString(R.string.indicator_message) + isEnabled);
-            if (SetActivity.mTimer != null) {
-                SetActivity.mTimer.cancel();
-                SetActivity.mTimer = null;
-            }
-            locationManager.removeTestProvider(LocationManager.GPS_PROVIDER);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-        }
+        Intent intent = new Intent(context, StopActivity.class);
+        startActivity(intent);
     }
 }
