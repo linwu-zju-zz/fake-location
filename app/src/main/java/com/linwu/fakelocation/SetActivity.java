@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,18 +25,6 @@ public class SetActivity extends Activity {
     double mLatitude;
     double mLongitude;
     public static final String TAG = "Fake!";
-
-    LocationListener listener = new LocationListener() {
-
-        public void onLocationChanged(Location location) {
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            Log.v(TAG,"location changed" + location.toString());
-        }
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
-        public void onProviderEnabled(String provider) {}
-        public void onProviderDisabled(String provider) {}
-
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +49,7 @@ public class SetActivity extends Activity {
         try {
             locationManager.addTestProvider(LocationManager.GPS_PROVIDER, true, false, false, false, true, false, true, Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
             locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, MainActivity.listener);
             //indicatorTextView.setText(getString(R.string.indicator_message) + isEnabled);
             if (mTimer != null) {
                 mTimer.cancel();

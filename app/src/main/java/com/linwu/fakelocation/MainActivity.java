@@ -1,7 +1,6 @@
 package com.linwu.fakelocation;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,24 +12,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Timer;
-
 
 public class MainActivity extends Activity {
 
     public static final String TAG = "Fake!";
-    Context context;
     boolean isEnabled = false;
     Button startButton;
     Button stopButton;
     TextView indicatorTextView;
     EditText latitudeEditText;
     EditText longitudeEditText;
-    Timer mTimer;
     double mLatitude;
     double mLongitude;
 
-    LocationListener listener = new LocationListener() {
+    static LocationListener listener = new LocationListener() {
 
         public void onLocationChanged(Location location) {
             //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -45,7 +40,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); //To change body of generated methods, choose Tools | Templates.
-        context = this;
         initUI();
     }
     
@@ -78,14 +72,14 @@ public class MainActivity extends Activity {
             mLatitude = Double.parseDouble(latitudeEditText.getText().toString());
             mLongitude = Double.parseDouble(longitudeEditText.getText().toString());
         } catch(NumberFormatException e) {
-            Toast.makeText(context, getString(R.string.error_input), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.error_input), Toast.LENGTH_LONG).show();
             return;
         }
         if(!checkCoordinate(mLatitude, mLongitude)) {
-            Toast.makeText(context, getString(R.string.error_input), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.error_input), Toast.LENGTH_LONG).show();
             return;
         }
-        Intent intent = new Intent(context, SetActivity.class);
+        Intent intent = new Intent(this, SetActivity.class);
         intent.putExtra(getString(R.string.latitude), mLatitude);
         intent.putExtra(getString(R.string.longitude), mLongitude);
         startActivity(intent);
@@ -97,7 +91,7 @@ public class MainActivity extends Activity {
 
     public void stopFakeLocations() {
         isEnabled = false;
-        Intent intent = new Intent(context, StopActivity.class);
+        Intent intent = new Intent(this, StopActivity.class);
         startActivity(intent);
     }
 }
