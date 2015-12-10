@@ -79,10 +79,10 @@ public class MainActivity extends Activity {
             Toast.makeText(this, getString(R.string.error_input), Toast.LENGTH_LONG).show();
             return;
         }
-        Intent intent = new Intent(this, SetActivity.class);
+        Intent intent = new Intent(this, FakeLocationService.class);
         intent.putExtra(getString(R.string.latitude), mLatitude);
         intent.putExtra(getString(R.string.longitude), mLongitude);
-        startActivity(intent);
+        startService(intent);
     }
 
     public boolean checkCoordinate(double latitude, double longitude) {
