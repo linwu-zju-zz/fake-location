@@ -56,7 +56,7 @@ public class FakeLocationService extends IntentService {
                     Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
             locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, MainActivity.listener);
-            MainActivity.indicatorTextView.setText(getString(R.string.indicator_message) + MainActivity.isEnabled);
+            //MainActivity.indicatorTextView.setText(getString(R.string.indicator_message) + MainActivity.isEnabled);
             if (mTimer != null) {
                 mTimer.cancel();
                 mTimer = null;

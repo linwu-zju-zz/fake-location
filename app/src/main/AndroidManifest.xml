@@ -13,7 +13,8 @@
         android:theme="@style/AppTheme">
         <service
             android:name=".FakeLocationService"
-            android:exported="true"/>
+            android:exported="true">
+        </service>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -25,22 +26,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SetActivity"
-            android:exported="true"
-            android:label="@string/title_activity_set"
-            android:theme="@android:style/Theme.NoDisplay">
-        </activity>
-        <activity
             android:name=".StopActivity"
             android:exported="true"
             android:label="@string/title_activity_stop"
             android:theme="@android:style/Theme.NoDisplay">
         </activity>
 
-        <service
-            android:name=".FakeLocationService"
-            android:exported="false">
-        </service>
     </application>
 
 </manifest>

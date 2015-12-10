@@ -27,9 +27,9 @@ public class StopActivity extends Activity {
             locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, false);
             MainActivity.indicatorTextView.setText(getString(R.string.indicator_message) + MainActivity.isEnabled);
             Log.v(TAG, "fake location disabled");
-            if (SetActivity.mTimer != null) {
-                SetActivity.mTimer.cancel();
-                SetActivity.mTimer = null;
+            if (FakeLocationService.mTimer != null) {
+                FakeLocationService.mTimer.cancel();
+                FakeLocationService.mTimer = null;
             }
             locationManager.removeTestProvider(LocationManager.GPS_PROVIDER);
         } catch (IllegalArgumentException e) {
