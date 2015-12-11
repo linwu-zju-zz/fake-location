@@ -51,16 +51,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/indicatorTextView"
-        android:layout_below="@+id/Title"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="13dp"
-        android:text="@string/initial_indicator_textView_text"/>
-
 
 </RelativeLayout>
 

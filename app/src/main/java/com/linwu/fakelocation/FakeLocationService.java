@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,7 +23,17 @@ public class FakeLocationService extends IntentService {
     final int lastTime = 1000 * 2; //2 seconds
     double mLatitude;
     double mLongitude;
-    public static final String TAG = "Fake!";
+    public static final String TAG = "FakeLocation";
+    static LocationListener listener = new LocationListener() {
+
+        public void onLocationChanged(Location location) {
+            Log.v(TAG, "location changed" + location.toString());
+        }
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+        public void onProviderEnabled(String provider) {}
+        public void onProviderDisabled(String provider) {}
+
+    };
 
     public FakeLocationService() {
         super("FakeLocationService");
@@ -55,8 +66,7 @@ public class FakeLocationService extends IntentService {
             locationManager.addTestProvider(LocationManager.GPS_PROVIDER, true, false, false, false, true, false, true,
                     Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
             locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, MainActivity.listener);
-            //MainActivity.indicatorTextView.setText(getString(R.string.indicator_message) + MainActivity.isEnabled);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, listener);
             if (mTimer != null) {
                 mTimer.cancel();
                 mTimer = null;
@@ -71,13 +81,11 @@ public class FakeLocationService extends IntentService {
         } catch (SecurityException e) {
             e.printStackTrace();
             //Security Exception - User has not enabled Mock-Locations
-            MainActivity.isEnabled = false;
-            Toast.makeText(this, getString(R.string.warning_mock_setting_message), Toast.LENGTH_LONG).show();
+            Log.v(TAG, "Mock location is not enabled on your device");
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             //probably the 'unknown provider issue'
             Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
-            MainActivity.isEnabled = false;
         }
     }
 
